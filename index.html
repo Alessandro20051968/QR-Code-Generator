@@ -2,30 +2,164 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+		/>
 		<title>QR Code Generator</title>
-
-		<!-- Google Fonts -->
+		<link rel="stylesheet" href="css/main.css" />
 		<link
-			href="https://fonts.googleapis.com/css2?family=Open+Sans&family=Poppins:wght@600&display=swap"
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap"
 			rel="stylesheet"
 		/>
+		<link rel="icon" type="image/png" href="favicon.png" />
+		<style>
+			a,
+			a:hover,
+			a:visited,
+			a:active {
+				text-decoration: none;
+				color: inherit;
+			}
 
-		<link rel="stylesheet" href="css/main.css" />
+			#bg-video {
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100vw;
+				height: 100vh;
+				object-fit: cover;
+				z-index: -1;
+				opacity: 0;
+				transition: opacity 1s ease;
+			}
+
+			.video-active {
+				opacity: 1 !important;
+			}
+		</style>
 	</head>
 	<body>
-		<div class="container">
-			<h1>QR Code Generator</h1>
-			<p>Enter a URL or text below:</p>
-			<input type="text" id="qr-input" placeholder="Enter your URL or text" />
-			<button id="generate-btn">Generate QR Code</button>
+		<!-- Video Background -->
+		<video id="bg-video" loop muted>
+			<source src="video/video.mp4" type="video/mp4" />
+			Your browser does not support HTML5 video.
+		</video>
 
-			<div class="qr-box" id="qr-box">
-				<img id="qr-img" src="" alt="QR Code" />
-				<button id="download-btn">Download QR Code</button>
+		<div class="container">
+			<!-- Favicon Above Generator -->
+
+			<div class="card">
+				<header>
+					<div class="logo">
+						<i class="fas fa-qrcode"></i>
+					</div>
+					<h1>QR Code Generator</h1>
+					<p class="subtitle">Transform links into scannable codes instantly</p>
+				</header>
+
+				<div class="form">
+					<div class="input-group">
+						<i class="fas fa-link"></i>
+						<input
+							type="text"
+							spellcheck="false"
+							placeholder="Paste your URL here..."
+						/>
+					</div>
+					<button class="generate-btn">
+						<i class="fas fa-bolt"></i>
+						<span>Generate QR Code</span>
+					</button>
+				</div>
+
+				<div class="qr-code">
+					<div class="qr-placeholder">
+						<i class="fas fa-qrcode"></i>
+						<p>Your QR will appear here</p>
+					</div>
+					<img src="" alt="qr-code" />
+					<div class="qr-actions">
+						<button class="download-btn">
+							<i class="fas fa-download"></i> Download
+						</button>
+						<button class="copy-btn"><i class="fas fa-copy"></i> Copy</button>
+					</div>
+				</div>
 			</div>
 		</div>
 
+		<footer class="footer">
+			<div class="footer-content">
+				<p class="made-by">Made by <span>NORVIN</span></p>
+				<div class="social-links">
+					<a
+						href="https://github.com/CodingNORVIN"
+						target="_blank"
+						rel="noopener noreferrer"
+						class="github"
+					>
+						<i class="fab fa-github"></i>
+					</a>
+					<a
+						href="https://t.me/norvin_adapter"
+						target="_blank"
+						rel="noopener noreferrer"
+						class="telegram"
+					>
+						<i class="fab fa-telegram"></i>
+					</a>
+				</div>
+			</div>
+
+			<audio id="clickSound" preload="auto">
+				<source src="audio/audio.mp3" type="audio/mpeg" />
+			</audio>
+		</footer>
+
 		<script src="js/script.js"></script>
+		<script>
+			window.addEventListener('load', function () {
+				document.body.classList.add('animation-ready');
+				const clickSound = document.getElementById('clickSound');
+				const bgVideo = document.getElementById('bg-video');
+
+				clickSound.volume = 0.3;
+				bgVideo.volume = 0;
+
+				document.querySelectorAll('.footer a').forEach(link => {
+					link.addEventListener('click', e => {
+						if (link.getAttribute('target') === '_blank') {
+							e.preventDefault();
+
+							// Play sound and show video
+							clickSound.currentTime = 0;
+							clickSound
+								.play()
+								.then(() => {
+									bgVideo.currentTime = 0;
+									bgVideo.classList.add('video-active');
+									bgVideo.play();
+
+									// Open link immediately in new tab
+									const newTab = window.open(link.href, '_blank');
+
+									// Hide video when audio ends
+									setTimeout(() => {
+										bgVideo.classList.remove('video-active');
+										bgVideo.pause();
+										if (newTab) newTab.focus();
+									}, clickSound.duration * 1000);
+								})
+								.catch(e => console.log('Media play prevented:', e));
+						}
+					});
+				});
+			});
+		</script>
 	</body>
 </html>
