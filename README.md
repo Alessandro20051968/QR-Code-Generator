@@ -151,7 +151,7 @@ Accessibility and usability 🧵
   - Optional high-contrast mode with thicker modules for readability in bright environments.
 - Internationalization:
   - Text strings can be translated to multiple languages.
-  - Right-to-left language support is planned for future releases.
+  - Right-to-left language support will be added in future releases.
 
 Performance and reliability ⚙️
 - Lightweight by design:
