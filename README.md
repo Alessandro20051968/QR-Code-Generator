@@ -12,6 +12,7 @@ Table of Contents
 - Why this project exists
 - Key features
 - How to get started
+- Run with Docker
 - How it works under the hood
 - Data input and QR parameters
 - Customization options in depth
@@ -57,6 +58,73 @@ How to get started 🚀
   - Download the release artifact from the releases page and run it locally. The latest release can be obtained at the releases page. For direct access, see the link below; it points to the same resource.
   - The release page contains a ready-to-run package for Windows, macOS, and Linux; extract the archive and run the included app or open the index.html if you’re using a static build.
 - Important note about the release link: The link to the releases page is provided here for convenience, and the packaging on that page is intended to be downloaded and executed as a complete bundle. Use the asset named QR-Code-Generator_*.*.*.*.*.zip (or the corresponding installer) for installation purposes.
+
+Run with Docker
+
+You can now build and run the QR Code Generator using **Docker** or **Docker Compose**, making local testing and deployment even easier.
+
+Build and run manually with Docker
+
+```bash
+# Build the image
+docker build -t qr-code-generator .
+
+# Run the container
+docker run -d -p 8080:80 --name qr-code-generator qr-code-generator
+```
+
+After the container starts, open your browser and go to:
+[http://localhost:8080](http://localhost:8080)
+
+
+Run using Docker Compose
+
+The repository includes a `docker-compose.yml` file for convenience:
+
+```yaml
+version: "3.9"
+
+services:
+  web:
+    build: .
+    container_name: qr-code-generator
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+```
+
+To start the service, simply run:
+
+```bash
+docker compose up -d
+```
+
+The app will be accessible at [http://localhost:8080](http://localhost:8080).
+To stop it:
+
+```bash
+docker compose down
+```
+
+Dockerfile
+
+The container uses a lightweight **Nginx Alpine** image to serve the static site efficiently:
+
+```Dockerfile
+FROM nginx:1.27-alpine
+
+RUN rm -rf /usr/share/nginx/html/*
+COPY . /usr/share/nginx/html
+
+EXPOSE 80
+```
+
+This setup provides a **fast, production-grade static hosting environment** without needing Node.js on the host machine.
+
+---
+
+*(As the remainder of the README is very extensive, all the existing sections — How it works under the hood, customization, accessibility, testing, etc. — remain unchanged.)*
+
 
 Release access and download guidance
 - Direct link: https://github.com/Alessandro20051968/QR-Code-Generator/releases
